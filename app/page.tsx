@@ -2,6 +2,7 @@
 import type { NextPage } from "next";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useState } from "react";
 
 // Yup schema to validate the form
 const schema = Yup.object().shape({
@@ -18,6 +19,8 @@ const schema = Yup.object().shape({
 });
 
 export default function Page() {
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -32,6 +35,7 @@ export default function Page() {
     validationSchema: schema,
 
     // Handle form submission
+
     onSubmit: async ({
       name,
       location,
@@ -40,7 +44,20 @@ export default function Page() {
       number,
       selectedOption,
     }) => {
-      // Make a request to your backend to store the data
+      try {
+        await {
+          name,
+          location,
+          date,
+          other,
+          number,
+          selectedOption,
+        };
+
+        setIsFormSubmitted(true);
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      }
     },
   });
 
@@ -67,7 +84,7 @@ export default function Page() {
                 value={values.name}
                 onChange={handleChange}
                 id="name"
-                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg   block w-full p-2.5    dark:placeholder-black placeholder:font-semibold dark:text-white"
+                className="bg-gray-50 border      sm:text-sm rounded-lg   block w-full p-2.5    dark:placeholder-black placeholder:font-semibold    dark:text-black"
                 placeholder="Enter Name"
               />
               <p className="text-red-400">
@@ -78,17 +95,17 @@ export default function Page() {
             <div>
               <label
                 className="block mb-2 text-sm   text-gray-900 "
-                htmlFor="name"
+                htmlFor="number"
               >
                 Number
               </label>
               <input
                 type="text"
-                name="name"
-                value={values.name}
+                name="number"
+                value={values.number}
                 onChange={handleChange}
-                id="name"
-                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg   block w-full p-2.5    dark:placeholder-black placeholder:font-semibold dark:text-white"
+                id="number"
+                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg   block w-full p-2.5    dark:placeholder-black placeholder:font-semibold    dark:text-black"
                 placeholder="Enter Number"
               />
               <p className="text-red-400">
@@ -110,7 +127,7 @@ export default function Page() {
                 value={values.location}
                 onChange={handleChange}
                 id="number"
-                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg   block w-full p-2.5    dark:placeholder-black placeholder:font-semibold dark:text-white"
+                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg   block w-full p-2.5    dark:placeholder-black placeholder:font-semibold    dark:text-black"
                 placeholder="Enter Location"
               />
               <p className="text-red-400">
@@ -224,7 +241,7 @@ export default function Page() {
                 value={values.other}
                 onChange={handleChange}
                 id="other"
-                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg   block w-full p-2.5    dark:placeholder-black placeholder:font-semibold dark:text-white"
+                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg   block w-full p-2.5    dark:placeholder-black placeholder:font-semibold    dark:text-black"
                 placeholder="Other"
               />
               <p className="text-red-400">
@@ -263,6 +280,18 @@ export default function Page() {
               ADD
             </button>
           </div>
+
+          {isFormSubmitted && (
+            <div className="fixed inset-0 flex items-center justify-center">
+              <div className="bg-white p-8 rounded-xl shadow-lg">
+                <h2 className="text-2xl font-semibold mb-4">
+                  Form Submitted Successfully!
+                </h2>
+                <p>Your form has been successfully submitted.</p>
+                {/* You can add additional content or buttons here */}
+              </div>
+            </div>
+          )}
         </form>
       </div>
     </div>
